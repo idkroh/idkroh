@@ -1,5 +1,6 @@
 """Generate profile assets from public GitHub data, using only the standard library."""
 from collections import Counter, defaultdict
+import base64
 from datetime import date, datetime, timedelta, timezone
 from html import escape
 from html.parser import HTMLParser
@@ -105,7 +106,7 @@ def rect(x, y, w, h, fill=PANEL, radius=8, stroke=LINE, extra=""):
 def svg(w, h, title, body):
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="{escape(title, quote=True)}">
 <title>{escape(title)}</title>
-<style>text{{font-family:{FONT}}}.blink{{animation:blink 1.2s steps(1) infinite}}.pulse{{animation:pulse 3s ease-in-out infinite}}.scan{{animation:scan 9s linear infinite}}@keyframes blink{{50%{{opacity:0}}}}@keyframes pulse{{50%{{opacity:.45}}}}@keyframes scan{{0%{{transform:translateX(0);opacity:0}}10%{{opacity:.45}}90%{{opacity:.45}}100%{{transform:translateX(795px);opacity:0}}}}@media(prefers-reduced-motion:reduce){{.blink,.pulse{{animation:none}}.scan{{animation:none;opacity:0}}}}</style>
+<style>text{{font-family:{FONT}}}.blink{{animation:blink 1.2s steps(1) infinite}}.pulse{{animation:pulse 3s ease-in-out infinite}}.scan{{animation:scan 9s linear infinite}}.portrait{{animation:reveal 12s infinite}}.portrait-scan{{animation:portraitscan 12s infinite}}@keyframes blink{{50%{{opacity:0}}}}@keyframes pulse{{50%{{opacity:.45}}}}@keyframes scan{{0%{{transform:translateX(0);opacity:0}}10%{{opacity:.45}}90%{{opacity:.45}}100%{{transform:translateX(795px);opacity:0}}}}@keyframes reveal{{0%{{clip-path:inset(0 0 100% 0);opacity:0}}4%{{clip-path:inset(0 0 100% 0);opacity:1}}32%,94%{{clip-path:inset(0 0 0 0);opacity:1}}100%{{clip-path:inset(0 0 0 0);opacity:0}}}}@keyframes portraitscan{{0%,4%{{transform:translateY(0);opacity:0}}5%{{opacity:.6}}32%{{transform:translateY(329px);opacity:.6}}33%,100%{{transform:translateY(329px);opacity:0}}}}@media(prefers-reduced-motion:reduce){{.blink,.pulse,.portrait{{animation:none}}.scan,.portrait-scan{{animation:none;opacity:0}}}}</style>
 {rect(1, 1, w-2, h-2, BG, 14)}{body}</svg>'''
 
 
@@ -116,14 +117,16 @@ def terminal(w, label):
 
 def header():
     body = terminal(920, "~/rohith/profile — README.md")
-    body += txt(36, 85, "idkroh@github:~ $ ./introduce.sh", 15, GREEN)
-    body += txt(35, 150, "Rohith Ramesh", 57, WHITE, "700")
-    body += txt(38, 189, "FULL-STACK DEVELOPMENT / AI TOOLS / WEB APPS", 15, GOLD)
-    body += txt(38, 226, "Building useful things. Making them feel good to use.", 16, MUTED)
-    body += rect(38, 250, 176, 29, "#14261c", 5, "#254c33") + txt(50, 270, "●  always building", 13, GREEN)
-    body += txt(810, 270, "[ _ ]", 20, GOLD, extra='class="blink"')
-    body += f'<path d="M1 299H919" stroke="{GOLD}" stroke-opacity=".5"/>'
-    return svg(920, 302, "Rohith Ramesh — full-stack development, AI tools, web apps", body)
+    body += txt(36, 83, "idkroh@github:~ $ ./introduce.sh", 15, GREEN)
+    body += txt(35, 143, "Rohith Ramesh", 54, WHITE, "700")
+    body += txt(38, 180, "FULL-STACK DEVELOPMENT / AI TOOLS / WEB APPS", 14, GOLD)
+    body += txt(38, 212, "Building useful things. Making them feel good to use.", 15, MUTED)
+    body += f'<path d="M666 65V211" stroke="{LINE}"/>'
+    for i,line in enumerate(["const rohith = {",'  focus: "AI × Web",','  mode: "building",',"  curiosity: Infinity","};"]):
+        body += txt(690,83+i*25,line,12,[GREEN,GOLD,GOLD,WHITE,GREEN][i])
+    body += txt(870,209,"_",17,GREEN,extra='class="blink"')
+    body += f'<path d="M1 237H919" stroke="{GOLD}" stroke-opacity=".5"/>'
+    return svg(920, 240, "Rohith Ramesh — full-stack development, AI tools, web apps", body)
 
 
 def contributions(data):
@@ -188,6 +191,49 @@ def dashboard(data):
     return svg(610, 458, "GitHub activity overview", body)
 
 
+def identity(data):
+    portrait = ASSETS / "terminal-portrait.png"
+    if not portrait.exists():
+        return None
+    source = base64.b64encode(portrait.read_bytes()).decode("ascii")
+    body = terminal(920, "whoami — Rohith Ramesh / @idkroh")
+    body += rect(18,60,388,404,BG,8,LINE)
+    body += txt(35,83,"01 / PORTRAIT",11,GOLD)
+    body += f'<svg x="25" y="95" width="374" height="340" viewBox="0 0 374 340"><image class="portrait" href="data:image/png;base64,{source}" width="374" height="340" preserveAspectRatio="xMidYMid meet"/></svg>'
+    body += f'<path d="M31 102h18M31 102v18M393 102h-18M393 102v18M31 431h18M31 431v-18M393 431h-18M393 431v-18" fill="none" stroke="{GOLD}" stroke-opacity=".65"/>'
+    body += f'<rect x="40" y="102" width="340" height="1" fill="{GREEN}" opacity="0" class="portrait-scan"/>'
+    body += txt(36,453,"ROHITH RAMESH",13,WHITE,"600")
+    body += txt(326,453,"@idkroh",11,GOLD)
+    body += txt(430,82,"02 / ACTIVITY OVERVIEW",11,GOLD)
+    values = [
+        (sum(d["count"] for d in data["days"]),"CONTRIBUTIONS / YEAR",GREEN),
+        (data["public_repositories"],"PUBLIC REPOSITORIES",WHITE),
+        (sum(d["count"]>0 for d in data["days"]),"ACTIVE DAYS / YEAR",WHITE),
+        (max(d["count"] for d in data["days"]),"MOST IN A DAY",GOLD),
+    ]
+    for i,(value,label,color) in enumerate(values):
+        x,y=430+(i%2)*240,110+(i//2)*93
+        body += txt(x,y,label,11,MUTED)
+        body += txt(x,y+46,f"{value:,}",40,color,"700")
+    body += f'<path d="M430 275H885" stroke="{LINE}"/>'
+    body += txt(430,301,"MONTHLY CONTRIBUTIONS",11,MUTED)
+    months=defaultdict(int)
+    for day in data["days"]:
+        months[day["date"][:7]]+=day["count"]
+    selected=sorted(months.items())[-12:]
+    highest=max((n for _,n in selected),default=1) or 1
+    for i,(month,count) in enumerate(selected):
+        height=90*count/highest
+        x=432+i*38
+        body+=rect(x,411-height,23,height if count else 2,GREEN,2,GREEN)
+        body+=txt(x+11,430,date.fromisoformat(month+"-01").strftime("%b"),10,MUTED,extra='text-anchor="middle"')
+    body+=f'<path d="M430 411H886" stroke="{LINE}"/>'
+    body+=txt(430,458,"PUBLIC GITHUB DATA",10,MUTED)
+    body+=txt(766,458,data["updated"],10,MUTED)
+    body+=f'<circle cx="887" cy="454" r="3" fill="{GREEN}" class="pulse"/>'
+    return svg(920,484,"Rohith Ramesh — terminal portrait and GitHub activity",body)
+
+
 def stack(data):
     body = terminal(920, "stack.json — tools I build with")
     items = [("TS","TypeScript","#72aefa"),("R","React","#67d5ef"),("PY","Python",GOLD),("API","FastAPI",GREEN),("ML","PyTorch","#ef9579"),("CV","OpenCV",GREEN),("GIT","Git",GOLD),("CI","GitHub Actions","#72aefa")]
@@ -237,6 +283,9 @@ def generate(data):
         "project-web.svg": project("Nascom Landscaping","04",["An independent website concept.","A focused interface for a service brand."],"TYPESCRIPT / CSS / WEB DESIGN",GREEN),
         "footer.svg": svg(920,62,"Keep building",txt(26,38,"$ keep building",14,GOLD)+txt(880,38,"_",18,GREEN,extra='class="blink"')),
     }
+    identity_svg = identity(data)
+    if identity_svg:
+        assets["identity.svg"] = identity_svg
     # Validate every SVG before writing any asset. A failed fetch or parse retains the previous set.
     for content in assets.values():
         ET.fromstring(content)

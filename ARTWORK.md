@@ -1,0 +1,7 @@
+# Terminal portrait artwork
+
+Generated using the built-in Imagegen tool from the user's supplied photo. The original photo remains the GitHub account avatar. The generated PNG is embedded without pixel modifications in the SVG dashboard; the reveal is implemented in SVG/CSS.
+
+## Final generation prompt
+
+Use case: style-transfer, identity-preserve. Asset type: standalone square terminal portrait artwork for this person's GitHub profile README. Input image: reference identity photo of Rohith; faithfully preserve his recognizable face proportions, wavy messy dark hair, eyes, slight facial hair, straight-on pose and black blazer. Primary request: recreate this man as an exquisite high-detail monochrome terminal ASCII / contour line portrait, similar to a premium developer's ASCII face render. Pure near-black #0d1117 background. The head and shoulders are formed from fine light gray and off-white monospaced character marks and thin contour lines, with densely layered hair, beautiful recognizable facial structure. Subtle restrained warm muted gold #cda66c contour highlights, tiny green #39d875 code pixels very sparingly. Image itself is only the portrait, no interface, no frame, no circle, no gold circular border, no words, no numbers, no visible large code, no watermark. Centered head and shoulders with comfortable negative space at top and sides; head occupies 70 percent of square canvas height. Sophisticated clean high contrast vector-like line engraving, restrained, stylish, precise. Preserve identity and dignified neutral expression.

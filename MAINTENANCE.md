@@ -2,7 +2,7 @@
 
 The public `idkroh/idkroh` repository supplies the README on the GitHub profile.
 
-Edit `README.md` for wording and links. The original supplied portrait is in `assets/portrait.jpg`; the account avatar is managed separately in GitHub profile settings.
+Edit `README.md` for wording and links. The original supplied portrait is in `assets/portrait.jpg`; the account avatar is managed separately in GitHub profile settings. `assets/terminal-portrait.png` is the generated ASCII-style illustration. `assets/identity.svg` embeds it alongside real metrics, with a repeating 12-second scan reveal. The artwork prompt is recorded in `ARTWORK.md`.
 
 `python scripts/generate_profile.py` regenerates the local SVG assets using Python's standard library. The daily GitHub Actions workflow runs around 02:17 UTC (06:17 in Dubai); GitHub may delay scheduled jobs. Use **Actions → Refresh profile graphics → Run workflow** for an immediate refresh. GitHub may disable scheduled workflows after 60 days without repository activity; re-enable it from the Actions tab if needed.
 

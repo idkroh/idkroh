@@ -10,18 +10,9 @@
 
 <h3 align="center"><samp>idkroh@github:~ $ whoami</samp></h3>
 
-<table>
-  <tr>
-    <td width="36%" align="center" valign="middle">
-      <img src="assets/portrait.jpg" alt="Rohith Ramesh" width="280" />
-      <br />
-      <samp><strong>Rohith Ramesh</strong><br />@idkroh</samp>
-    </td>
-    <td width="64%" valign="middle">
-      <img src="assets/dashboard.svg" alt="GitHub activity dashboard: contributions, public repositories, active days, and monthly activity" width="100%" />
-    </td>
-  </tr>
-</table>
+<p align="center">
+  <img src="assets/identity.svg" alt="Rohith Ramesh — an animated terminal portrait beside real GitHub contributions, public repositories, active days, and monthly activity" width="100%" />
+</p>
 
 I build web applications and AI tools, from payment intelligence and computer vision to developer workflows. I work with **TypeScript, React, and Python**, with an eye for interfaces that feel as good as they work.
 
